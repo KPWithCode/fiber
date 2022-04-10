@@ -8,8 +8,8 @@ import (
 type Books struct {
 	ID			uint		`gorm:"primary key;autoIncrement" json:"id"`
 	Author		*string		`json:"author"`
-	title		*string		`json:"title"`
-	Publisher	*string		`json:"Publisher"`
+	Title		*string		`json:"title"`
+	Publisher	*string		`json:"publisher"`
 	Genre		*string		`json:"Genre"`
 }
 
