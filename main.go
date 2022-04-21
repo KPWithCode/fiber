@@ -114,6 +114,11 @@ func main() {
 		log.Fatal("could not load the database")
 	}
 
+	err = models.Migratebooks(db)
+	if err != nil {
+		log.Fatal("could not migrate db")
+	}
+
 	r := Repository{
 		DB: db,
 	}
