@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -85,11 +86,36 @@ func (r *Repository) DeleteBook(context *fiber.Ctx) error {
 	return nil
 }
 
+func (r *Repository) GetBookByID(context *fiber.Ctx) error {
+	id := context.Params("id")
+	bookModel := &models.Books{}
+	if id == "" {
+		context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "id cannot be empty",
+		})
+		return nil
+	}
+	fmt.Println("the ID is", id)
+	err := r.DB.Where("id = ?", id).First(bookModel).Error
+	if err != nil {
+		context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "could not get the book",
+		})
+		return err
+	}
+	context.Status(http.StatusOK).JSON(&fiber.Map{
+		"message": "book id fetched successfully",
+		"data":    bookModel,
+	})
+	return nil
+}
+
 // routes
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 	api.Post("/create_books", r.CreateBook)
 	api.Get("/books", r.GetBooks)
+	api.Get("/get_book/:id", r.GetBookByID)
 	api.Delete("/delete_book/:id", r.DeleteBook)
 }
 
